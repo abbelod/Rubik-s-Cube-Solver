@@ -250,12 +250,12 @@ def heuristic(cube):
     return distance
 
 
-path = []
 
 def cube_to_tuple(cube):
     """Convert cube state to a tuple for hashing."""
     return (tuple(cube.F), tuple(cube.L), tuple(cube.R), tuple(cube.B), tuple(cube.U), tuple(cube.D))
 
+path = []
 def solve_cube(cube: Cube, show = False):
     reached = set()
     open = []
