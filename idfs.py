@@ -137,7 +137,7 @@ class Cube:
         rotate_face_acw(self.B)
 
 
-    valid_moves = [BA,BC,DA,DC,UA,UC,RA,RC,LA,LC,FA,FC]
+    valid_moves = [FC,BC,LC,RC,UC,DC,FA,BA,LA,RA,UA,DA]
     test_valid_moves = [BA,DA,UA,RA,LA,FA]
 
     def print(self):
@@ -163,8 +163,9 @@ class Cube:
         update()
 
     def test_scramble(self):
-        self.FC()
-        self.RC()
+        self.UC()
+        self.FA()
+        self.FA()
 
     def scramble(self):
         for i in range(random.randint(20,30)):
@@ -228,31 +229,35 @@ def cube_to_tuple(cube):
 
 
 states = set()
-stack = []
+path = []
 
 def idfs(cube, final_cube, max_depth):
     for i in range(1, max_depth):
         if (solve_cube(cube,final_cube, i)) == True:
             return True
         states.clear()
-        stack.clear()
     return False
 
 
 def solve_cube(cube,final_cube, level):
-    if level <= 0 :
-        return False
+
     if cube.is_solved(initial = final_cube):
         return True
+    
+    if level <= 0 :
+        path.pop()
+        return False
     state = cube_to_tuple(cube)
     if state not in states:
         states.add(state)
         for fun in cube.valid_moves:
             newcube = copy.deepcopy(cube)
-            stack.append(fun.__name__)
             fun(newcube)
+            path.append(fun.__name__)
             if (solve_cube(newcube,final_cube, level-1)) == True:
                 return True
+            if len(path) > 0 : path.pop()  
+            
         return False
     
 
@@ -286,6 +291,10 @@ def test(cube, level):
             if count > 100:
                 return
 
+
+
+
+
 mycube = Cube()
 mycube.test_scramble()
 mycube.print()
@@ -295,3 +304,8 @@ print(idfs(solved,mycube, 22))
 print("Solved In ", time.time() - start_time)
 
 
+path.reverse()
+path_reversed = []
+for move in path:
+    path_reversed.append(move[0] + ('C' if move[1] == 'A' else 'A'))
+print(path_reversed)

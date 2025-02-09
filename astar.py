@@ -147,7 +147,7 @@ class Cube:
         rotate_face_acw(self.B)
 
 
-    valid_moves = [BA,BC,DA,DC,UA,UC,RA,RC,LA,LC,FA,FC]
+    valid_moves = [FC,BC,LC,RC,UC,DC,FA,BA,LA,RA,UA,DA]
     test_valid_moves = [BA,DA,UA,RA,LA,FA]
 
     def print(self):
@@ -174,9 +174,8 @@ class Cube:
 
     def test_scramble(self):
         self.FC()
-        self.FC()
-        self.RC()
-        self.LC()
+        self.UC()
+        self.DA()
 
     def scramble(self):
         for i in range(random.randint(20,30)):
@@ -251,6 +250,7 @@ def heuristic(cube):
     return distance
 
 
+path = []
 
 def cube_to_tuple(cube):
     """Convert cube state to a tuple for hashing."""
@@ -259,24 +259,25 @@ def cube_to_tuple(cube):
 def solve_cube(cube: Cube, show = False):
     reached = set()
     open = []
-    heapq.heappush(open, cube)
+    heapq.heappush(open, (cube, []))
 
     while(open):
-        current_cube: Cube = heapq.heappop(open)
+        current_cube, move = heapq.heappop(open)
+        path.append(move)
         if(show == True):
             current_cube.print()
         if current_cube.is_solved():
             return current_cube
 
         reached.add(cube_to_tuple(current_cube))
-        for fun in current_cube.test_valid_moves:
+        for fun in current_cube.valid_moves:
             newcube = copy.deepcopy(current_cube)
             fun(newcube)
             if cube_to_tuple(newcube) not in reached:
                 newcube.g = current_cube.g + 1
                 newcube.h = heuristic(newcube)
                 newcube.f = newcube.g + newcube.h
-                heapq.heappush(open, newcube)
+                heapq.heappush(open, (newcube, fun.__name__))
             
 
 
@@ -321,3 +322,6 @@ solved = solve_cube(mycube, show=True)
 print("Solved In ", time.time() - start_time)
 solved.print()
 time.sleep(1)
+
+path.pop(0)
+print(path)
