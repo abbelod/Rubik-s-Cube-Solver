@@ -4,13 +4,7 @@ import copy
 import time
 
 class Cube:
-    # U = ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W'] # front
-    # L = ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'] # upper
-    # R = ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'] # down
-    # F = ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'] # left
-    # B = ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'] # right
-    # D = ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'] # back
-
+ 
     def __init__(self):
         self.U = ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W'] # front
         self.L = ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'] # upper
@@ -170,17 +164,12 @@ class Cube:
 
     def test_scramble(self):
         self.FC()
-        self.FC()
         self.RC()
-        self.LC()
-        self.BC()
-        self.BC()
 
     def scramble(self):
         for i in range(random.randint(20,30)):
             fun = random.choice(self.valid_moves)
             fun(self)
-            # self.print()
 
 
     def is_solved(self, initial):
@@ -252,23 +241,16 @@ def idfs(cube, final_cube, max_depth):
 
 def solve_cube(cube,final_cube, level):
     if level <= 0 :
-        # print('level exceeded')
         return False
     if cube.is_solved(initial = final_cube):
-        # print('cube solved')
         return True
     state = cube_to_tuple(cube)
     if state not in states:
         states.add(state)
-        for fun in cube.test_valid_moves:
-            # if len(stack) > 1 and stack[-1] == stack[-2] and stack[-1] == fun.__name__:
-            #     # print('move made two time in row')
-            #     continue
+        for fun in cube.valid_moves:
             newcube = copy.deepcopy(cube)
-            # print(fun.__name__)
             stack.append(fun.__name__)
             fun(newcube)
-            # newcube.print()
             if (solve_cube(newcube,final_cube, level-1)) == True:
                 return True
         return False
@@ -305,16 +287,11 @@ def test(cube, level):
                 return
 
 mycube = Cube()
-# solved = Cube()
-
-test(mycube, 6)
-
-# mycube.test_scramble()
-# # mycube.scramble()
-# mycube.print()
-# time.sleep(1)
-# start_time = time.time()
-# print(idfs(solved,mycube, 22))
-# print("Solved In ", time.time() - start_time)
+mycube.test_scramble()
+mycube.print()
+time.sleep(1)
+start_time = time.time()
+print(idfs(solved,mycube, 22))
+print("Solved In ", time.time() - start_time)
 
 

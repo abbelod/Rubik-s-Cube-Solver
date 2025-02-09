@@ -25,13 +25,13 @@ class Cube:
     # Front Clockwise
     def FC(self):
         bl, bc, br = self.U[6], self.U[7], self.U[8]
-        self.U[6], self.U[7], self.U[8] = self.L[8], self.L[5], self.L[2] 
+        self.U[6], self.U[7], self.U[8] = self.L[8], self.L[5], self.L[2]
         self.L[2], self.L[5], self.L[8] = self.D[0], self.D[1], self.D[2]
         self.D[0], self.D[1], self.D[2] = self.R[6], self.R[3], self.R[0]
         self.R[0], self.R[3], self.R[6] = bl, bc, br
 
         rotate_face_cw(self.F)
-        
+
     # Front AntiClockwise
     def FA(self):
         bl, bc, br = self.U[6], self.U[7], self.U[8]
@@ -45,7 +45,7 @@ class Cube:
     # Left Clockwise
     def LC(self):
         bl, bc, br = self.U[0], self.U[3], self.U[6]
-        self.U[0], self.U[3], self.U[6] = self.B[8], self.B[5], self.B[2] 
+        self.U[0], self.U[3], self.U[6] = self.B[8], self.B[5], self.B[2]
         self.B[2], self.B[5], self.B[8] = self.D[6], self.D[3], self.D[0]
         self.D[6], self.D[3], self.D[0] = self.F[6], self.F[3], self.F[0]
         self.F[0], self.F[3], self.F[6] = bl, bc, br
@@ -58,7 +58,7 @@ class Cube:
         bl, bc, br = self.U[0], self.U[3], self.U[6]
         self.U[0], self.U[3], self.U[6] = self.F[0], self.F[3], self.F[6]
         self.F[0], self.F[3], self.F[6] = self.D[0], self.D[3], self.D[6]
-        self.D[0], self.D[3], self.D[6] = self.B[8], self.B[5], self.B[2] 
+        self.D[0], self.D[3], self.D[6] = self.B[8], self.B[5], self.B[2]
 
         self.B[2], self.B[5], self.B[8] = br, bc, bl
 
@@ -137,7 +137,7 @@ class Cube:
     # Bottom anti Clockwise
     def BA(self):
         bl, bc, br = self.U[0], self.U[1], self.U[2]
-        self.U[0], self.U[1], self.U[2]= self.L[6], self.L[3], self.L[0] 
+        self.U[0], self.U[1], self.U[2]= self.L[6], self.L[3], self.L[0]
         self.L[6], self.L[3], self.L[0] = self.D[8], self.D[7], self.D[6]
         self.D[8], self.D[7], self.D[6] = self.R[2], self.R[5], self.R[8]
         self.R[2], self.R[5], self.R[8] = bl, bc, br
@@ -171,31 +171,29 @@ class Cube:
 
     def test_scramble(self):
         self.FA()
-        # self.FC()
-        # self.RC()
-        # self.LC()
-        # self.BC()
+        self.RC()
+        self.LC()
+        self.BC()
 
     def scramble(self):
         for i in range(random.randint(20,30)):
             fun = random.choice(self.valid_moves)
             fun(self)
-            # self.print()
 
     def is_solved(self, initial):
         if self.B == initial.B and self.F == initial.F and self.L == initial.L and self.R == initial.R and self.U == initial.U:
-            return True        
+            return True
         return False
 
 def print_face(x, y, face):
     for i in range(9):
         draw_square(face[i], x, y)
-        x= x + 25    
+        x= x + 25
         if i == 2 or i == 5 or i == 8:
             penup()
             y = y - 25
             x = x - 75
-            
+
 def rotate_face_cw(F):
     tmp = F[0]
     F[0], F[6], F[8], = F[6], F[8], F[2]
@@ -217,11 +215,11 @@ def draw_square(col, x, y):
         forward(25)
         right(90) if i!=4 else 0
     end_fill()
-    
+
 def color_map(col):
     switcher = {
         'W' : 'white',
-        'O' : 'orange', 
+        'O' : 'orange',
         'R' : 'red' ,
         'G': 'green',
         'B' : 'blue',
@@ -247,24 +245,20 @@ def solve_cube(cube: Cube):
         current, moves = frontier.popleft()
 
         if current.is_solved(initial= initial):
-            # print('solved')
-            # print(moves)
             return current
-        
+
         state = cube_to_tuple(current)
         if state in reached:
-            # print('state alr processed')
             continue
         reached.add(state)
 
-        for move in current.test_valid_moves:
+        for move in current.valid_moves:
             newcube = copy.deepcopy(current)
             move(newcube)
-            # newcube.print()
             newstate = cube_to_tuple(newcube)
             if newstate not in reached:
                 frontier.append((newcube, moves + [move.__name__]))
-            
+
 
 
 sum =0
@@ -294,21 +288,18 @@ def test(cube, level):
             test(newcube, level-1)
             if count > 100:
                 return
-            
+
 
 
 
 mycube = Cube()
-# mycube.test_scramble()
-# # mycube.scramble()
-# mycube.print()
-# time.sleep(1)
-# start_time = time.time()
-# solved = solve_cube(mycube)
-# print("Solved In ", time.time() - start_time)
-# solved.print()
-# time.sleep(1)
-level = 8
-test(mycube, level)
-print(sum/ count)
+mycube.test_scramble()
+mycube.print()
+time.sleep(1)
+start_time = time.time()
+solved = solve_cube(mycube)
+print("Solved In ", time.time() - start_time)
+solved.print()
+time.sleep(1)
+
 

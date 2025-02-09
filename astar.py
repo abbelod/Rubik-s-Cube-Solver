@@ -6,13 +6,6 @@ import heapq
 
 
 class Cube:
-    # U = ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W'] # front
-    # L = ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'] # upper
-    # R = ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'] # down
-    # F = ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'] # left
-    # B = ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'] # right
-    # D = ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'] # back
-
 
     def __lt__(self, other):
         return self.f < other.f
@@ -184,8 +177,6 @@ class Cube:
         self.FC()
         self.RC()
         self.LC()
-        self.BC()
-        self.BC()
 
     def scramble(self):
         for i in range(random.randint(20,30)):
@@ -198,25 +189,6 @@ class Cube:
             if self.F[i] != 'G' or self.L[i] != 'O' or self.R[i] != 'R' or self.B[i] != 'B' or self.U[i] != 'W' or self.D[i] != 'Y':
                 return False
         return True
-        # for col in self.F:
-        #     if col != 'G':
-        #         return False
-        # for col in self.L:
-        #     if col != 'O':
-        #         return False
-        # for col in self.R:
-        #     if col != 'R':
-        #         return False
-        # for col in self.B:
-        #     if col != 'B':
-        #         return False
-        # for col in self.U:
-        #     if col != 'W':
-        #         return False
-        # for col in self.D:
-        #     if col != 'Y':
-        #         return False
-        # return True
 
 def print_face(x, y, face):
     for i in range(9):
@@ -284,26 +256,19 @@ def cube_to_tuple(cube):
     """Convert cube state to a tuple for hashing."""
     return (tuple(cube.F), tuple(cube.L), tuple(cube.R), tuple(cube.B), tuple(cube.U), tuple(cube.D))
 
-def solve_cube(cube: Cube):
+def solve_cube(cube: Cube, show = False):
     reached = set()
     open = []
     heapq.heappush(open, cube)
 
     while(open):
         current_cube: Cube = heapq.heappop(open)
+        if(show == True):
+            current_cube.print()
         if current_cube.is_solved():
-            # print("Solved")
             return current_cube
 
         reached.add(cube_to_tuple(current_cube))
-        # for fun in current_cube.valid_moves:
-        #     newcube = copy.deepcopy(current_cube)
-        #     fun(newcube)
-        #     if cube_to_tuple(newcube) not in reached:
-        #         newcube.g = current_cube.g + 1
-        #         newcube.h = heuristic(newcube)
-        #         newcube.f = newcube.g + newcube.h
-        #         heapq.heappush(open, newcube)
         for fun in current_cube.test_valid_moves:
             newcube = copy.deepcopy(current_cube)
             fun(newcube)
@@ -345,16 +310,14 @@ def test(cube, level):
                 return
             
 
-cube = Cube(0,0)
-test(cube, 8)
+
             
-# mycube = Cube(0,0)
-# mycube.test_scramble()
-# # mycube.scramble()
-# mycube.print()
-# time.sleep(1)
-# start_time = time.time()
-# solved = solve_cube(mycube)
-# print("Solved In ", time.time() - start_time)
-# solved.print()
-# time.sleep(1)
+mycube = Cube(0,0)
+mycube.test_scramble()
+mycube.print()
+time.sleep(1)
+start_time = time.time()
+solved = solve_cube(mycube, show=True)
+print("Solved In ", time.time() - start_time)
+solved.print()
+time.sleep(1)
